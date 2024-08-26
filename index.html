@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test</title>
+    <title>لونك</title>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
@@ -13,25 +13,126 @@
 </head>
 <style>
     body {
-        background-color: #0e382b;
+        background-color: #efefef;
     }
 
     #navbar-container {
         height: 100vh;
         display: flex;
+        justify-content:center;
+        align-items: center;
+        flex-direction: column;
+    }
+
+    #inputs_div {
+        display: flex;
         justify-content: center;
         align-items: center;
+        flex-direction: row;
+    }
+
+    #titleDiv {
+        display: flex;
+        justify-content: space-evenly;
+        align-items: center;
+        height: 30vh;
+        flex-direction: column;
+    }
+
+    #results {
+        min-height: 10vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
     }
 </style>
 
 <body>
     <div id="navbar-container">
+        <div id="titleDiv">
 
-        <h1 style="color:white">Hello</h1>
+            <h2 class="padding-bottom:80px">اكتب اسمك الثلاثي بالعربي</h2>
+            <div id="inputs_div">
 
-
-
+                <input type="text" id="name" value="">
+                <button id="convert">تحويل</button>
+            </div>
+        </div>
+        <div id="results">
+            <div id="name_div"></div>
+            <div id="sum_div"></div>
+        </div>
     </div>
 </body>
+
+<script>
+    const nameInput = document.getElementById('name')
+    const nameDiv = document.getElementById('name_div')
+    const sumDiv = document.getElementById('sum_div')
+    const convertButton = document.getElementById('convert')
+
+    convertButton.addEventListener("click", () => {
+        const name = nameInput.value.trim()
+        const nameNumbers = convert(name)
+        const nameSums = nameSum(name)
+
+        nameDiv.innerHTML = `<b id="names">${nameNumbers}</b>`
+        sumDiv.innerHTML = `<b id="names">${nameSums}</b>`
+
+        // If there are three words, use them as RGB values
+        const sumsArray = nameSums.split(' | ')
+        if (sumsArray.length >= 3) {
+            const r = parseInt(sumsArray[0])
+            const g = parseInt(sumsArray[1])
+            const b = parseInt(sumsArray[2])
+            document.body.style.backgroundColor = `rgb(${r}, ${g}, ${b})`
+        }
+    })
+
+    function convert(text) {
+        const words = text.split(' ')
+        const convertedWords = words.map(word => {
+            let textNumbers = ""
+            for (let i = 0; i < word.length; i++) {
+                const letter = word[i];
+                const number = convertArabicToNumber(letter)
+                if (textNumbers != "")
+                    textNumbers += " "
+                textNumbers += number.toString()
+            }
+            return textNumbers
+        })
+
+        return convertedWords.join(' | ')
+    }
+
+    function nameSum(text) {
+        const words = text.split(' ')
+        const wordSums = words.map(word => {
+            let sum = 0
+            for (let i = 0; i < word.length; i++) {
+                const letter = word[i];
+                const number = convertArabicToNumber(letter)
+                sum += number
+            }
+            sum = sum * 4
+            if (sum > 255)
+                sum = sum - 256
+            return sum
+        })
+
+        return wordSums.join(' | ')
+    }
+
+    // Define a mapping from Arabic letters to numbers
+    const arabicToNumber = "ابتثجحخدذرزسشصضطظعغفقكلمنهـوي"
+
+    // Function to convert Arabic letters to numbers
+    function convertArabicToNumber(arabicLetter) {
+        const index = arabicToNumber.indexOf(arabicLetter)
+        return index !== -1 ? index + 1 : 0; // 0 if letter not found
+    }
+</script>
 
 </html>
